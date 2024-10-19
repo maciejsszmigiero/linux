@@ -841,6 +841,8 @@ static void rtw_usb_intf_deinit(struct rtw_dev *rtwdev,
 	usb_set_intfdata(intf, NULL);
 }
 
+extern int in_suspend;
+
 int rtw_usb_probe(struct usb_interface *intf, const struct usb_device_id *id)
 {
 	struct rtw_dev *rtwdev;
@@ -848,6 +850,9 @@ int rtw_usb_probe(struct usb_interface *intf, const struct usb_device_id *id)
 	struct rtw_usb *rtwusb;
 	int drv_data_size;
 	int ret;
+
+	if (in_suspend)
+		return -EPROBE_DEFER;
 
 	drv_data_size = sizeof(struct rtw_dev) + sizeof(struct rtw_usb);
 	hw = ieee80211_alloc_hw(drv_data_size, &rtw_ops);

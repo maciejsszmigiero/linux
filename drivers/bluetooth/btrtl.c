@@ -1325,10 +1325,15 @@ void btrtl_set_quirks(struct hci_dev *hdev, struct btrtl_device_info *btrtl_dev)
 }
 EXPORT_SYMBOL_GPL(btrtl_set_quirks);
 
+extern int in_suspend;
+
 int btrtl_setup_realtek(struct hci_dev *hdev)
 {
 	struct btrtl_device_info *btrtl_dev;
 	int ret;
+
+	if (in_suspend)
+		return -EPROBE_DEFER;
 
 	btrtl_dev = btrtl_initialize(hdev, NULL);
 	if (IS_ERR(btrtl_dev))
